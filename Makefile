@@ -1,6 +1,10 @@
 CC = cc
-CFLAGS  = -ggdb -Wall -Werror -Wextra -pedantic -ansi -std=c89
-LDFLAGS = 
+
+CFLAGS   = -ggdb
+CFLAGS  += -Wall -Werror -Wextra
+CFLAGS  += -pedantic -ansi -std=c89
+INCFLAGS = -Iinclude
+LDFLAGS  = 
 
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
@@ -10,14 +14,19 @@ BIN = bin
 
 all: dirs ttt
 
+test: dirs src/game.o test.c
+	$(CC) src/game.o test.c $(LDFLAGS) $(CFLAGS) $(INCFLAGS) -o $(BIN)/$@
+	./$(BIN)/$@
+	rm ./$(BIN)/$@
+
 dirs:
 	mkdir -p ./bin
 
 ttt: $(OBJ)
-	$(CC) -o $(BIN)/ttt $^ $(LDFLAGS)
+	$(CC) $^ $(LDFLAGS) -o $(BIN)/ttt
 
 %.o: %.c
-	$(CC) -o $@ -c $^ $(CFLAGS)
+	$(CC) -c $< $(CFLAGS) $(INCFLAGS) -o $@
 
 clean:
 	rm -rf $(BIN) $(OBJ)
